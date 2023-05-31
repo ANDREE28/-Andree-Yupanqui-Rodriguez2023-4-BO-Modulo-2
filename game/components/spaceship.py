@@ -3,7 +3,7 @@ from pygame.sprite import Sprite
 from game.utils.constants import SPACESHIP, SCREEN_WIDTH, SCREEN_HEIGHT
 
 class Spaceship(Sprite):
- 
+
     SHIP_WIDTH = 40
     SHIP_HEIGHT = 60
     X_POS = (SCREEN_WIDTH //2) - SHIP_WIDTH
