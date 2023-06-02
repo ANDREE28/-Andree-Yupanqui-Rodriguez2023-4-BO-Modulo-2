@@ -26,7 +26,7 @@ class Spaceship(Sprite):
             self.bullet_manager = bullet_manager
             
     
-    def update(self, user_input):
+    def update(self, user_input,game):
       if user_input[pygame.K_LEFT]:
         self.move_left()
       elif user_input[pygame.K_RIGHT]:
@@ -36,7 +36,7 @@ class Spaceship(Sprite):
       elif user_input[pygame.K_DOWN]:
           self.move_down()
       elif user_input[pygame.K_SPACE]:
-          self.shoot(self.bullet_manager)
+          self.shoot(game)
 
     
         
@@ -69,9 +69,9 @@ class Spaceship(Sprite):
     def draw(self,screen):
       screen.blit(self.image,(self.rect.x, self.rect.y))
 
-    def shoot(self, bullet_manager):
+    def shoot(self, game):
             bullet = Bullet(self)  
-            bullet_manager.add_bullet(bullet)  
+            game.bullet_manager.add_bullet(bullet)  
 
 
                 

@@ -70,3 +70,6 @@ class Enemy(Sprite):
 
             self.shooting_time += random.randint(30, 50)
 
+    def reset(self):
+        self.enemies = []
+
