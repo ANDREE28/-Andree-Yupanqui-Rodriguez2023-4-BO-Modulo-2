@@ -1,5 +1,5 @@
 import pygame
-from game.utils.constants import SHIELD_TYPE
+from game.utils.constants import SHIELD_TYPE,SOUND
 class BulletManager:
     def __init__(self):
         self.bullets = []
@@ -16,6 +16,12 @@ class BulletManager:
                             game.enemy_manager.enemies.remove(enemy)
                             game.score.update()
                             self.bullets.remove(bullet)
+                            
+                            SOUND["burst"].set_volume(0.02)
+                            SOUND["burst"].play()
+                            
+                                
+                
 
         for bullet in self.enemy_bullets:
             bullet.update(self.enemy_bullets)
@@ -27,6 +33,7 @@ class BulletManager:
                     game.playing = False
                     pygame.time.delay(1000)
                     break
+              
 
         
     def draw(self,screen):
@@ -38,10 +45,10 @@ class BulletManager:
 
     def add_bullet(self,bullet):
 
-        if bullet.owner == 'player' and len(self.bullets)<3  :
+        if bullet.owner == 'player' and len(self.bullets)<3 :
             self.bullets.append(bullet)
 
-        elif bullet.owner == 'enemy' and len(self.enemy_bullets)<1:
+        elif bullet.owner == 'enemy' and len(self.enemy_bullets)<4:
             self.enemy_bullets.append(bullet)
 
     def reset(self):

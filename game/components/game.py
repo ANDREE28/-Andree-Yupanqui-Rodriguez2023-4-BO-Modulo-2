@@ -1,6 +1,6 @@
 import pygame
 
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE , FONT_STYLE
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE , FONT_STYLE,FONT_SIZE
 from game.components.spaceship import Spaceship
 from game.components.enemies.enemy_manager import EnemyManager
 from game.components.bullets.bullet_manager import BulletManager
@@ -21,14 +21,17 @@ class Game:
         self.x_pos_bg = 0
         self.y_pos_bg = 0
         self.death_count = 0
+        self.score = Counter()
+        self.death_count = Counter()
+        self.highest_score = Counter()
+        self.increment_counter = Counter()
         self.enemy_manager = EnemyManager()
         self.bullet_manager = BulletManager()
         self.player = Spaceship(self.bullet_manager)
         self.menu = Menu(self.screen)
-        self.score = Counter()
-        self.death_count = Counter()
-        self.highest_score = Counter()
+        
         self.power_up_manager = PowerUpManager()
+
 
     def  execute(self):
         self.running = True
@@ -46,6 +49,7 @@ class Game:
             self.events()
             self.update()
             self.draw()
+            self.check_game_over()
             
 
     def events(self):
@@ -56,10 +60,14 @@ class Game:
 
     def update(self):
         user_input = pygame.key.get_pressed()
-        self.player.update(user_input,self)
+        self.player.update(user_input, self)
+        if self.player.game_over:
+            self.playing = False
+            self.show_menu()
         self.enemy_manager.update(self)
         self.bullet_manager.update(self)
         self.power_up_manager.update(self)
+
        
     def draw(self):
         self.clock.tick(FPS)
@@ -71,6 +79,9 @@ class Game:
         self.score.draw(self.screen)
         self.power_up_manager.draw(self.screen)
         self.draw_power_up_time()
+        self.increment_counter.draw_increment(self.screen, 10, 50)
+        self.draw_player_life()
+        
     
 
         pygame.display.update()
@@ -121,8 +132,19 @@ class Game:
             time_to_show = round((self.player.power_time_up - pygame.time.get_ticks())/1000,2)
 
             if time_to_show >=0:
-               self.menu.draw(self.screen,f'{self.player.power_up_type.capitalize()}is enabled for{time_to_show} seconds',540,50,(255,255,255))
+               self.menu.draw(self.screen,f'{self.player.power_up_type.capitalize()} is enabled for   {time_to_show}    seconds ',540,50,(255,255,255))
             else:
                 self.player.has_power_up = False
                 self.player.power_up_type = DEFAULT_TYPE
                 self.player.set_image()
+
+
+    def draw_player_life(self):
+        font = pygame.font.SysFont(None, FONT_SIZE)
+        text = font.render(f"Life: {self.player.life}", True, (255, 255, 255))
+        self.screen.blit(text, (25, 25))
+
+    def check_game_over(self):
+            if self.player.life == 0:
+                self.playing = False
+                self.show_menu()
